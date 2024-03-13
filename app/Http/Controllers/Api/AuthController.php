@@ -8,53 +8,77 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+
+
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'role'=> 'required|string|in:manager,employee',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-       
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role'=> $request->role,
-            'password' => bcrypt($request->password),
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['token' => $token], 201);
-    }
-
     public function login(Request $request)
     {
-        $request->validate([
+        // Validate incoming request
+        $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        // Attempt to authenticate user
+        if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $user = User::where('email', $request->email)->firstOrFail();
+        // Get the authenticated user
+        $user = Auth::user();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Check if the user's role is allowed to log in
+        if (!$this->isRoleAllowedToLogin($user->role)) {
+            // If the user's role is not allowed, logout and return unauthorized
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'role' => ['The user role is not allowed to log in.'],
+            ]);
+        }
 
-        return response()->json(['token' => $token], 200);
+        // Generate user token
+        $tokenResult = $user->createToken('authToken');
+
+        // Return token and user role
+        return response()->json(['access_token' => $tokenResult->accessToken, 'role' => $user->role], 200);
+    }
+
+    private function isRoleAllowedToLogin($role)
+    {
+        // Define which roles are allowed to log in
+        $allowedRoles = ['admin', 'employee'];
+
+        // Check if the user's role is in the allowed roles list
+        return in_array($role, $allowedRoles);
+    }
+
+    public function register(Request $request)
+    {
+        // Validate incoming request
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string',
+            'role' => 'required|string|in:admin,employee',
+        ]);
+
+        // Create new user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+
+        return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
     }
 
     public function logout(Request $request)
     {
+        // Revoke current user token
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully'], 200);

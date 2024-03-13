@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Sale;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SalesController extends Controller
 {
@@ -23,7 +25,7 @@ class SalesController extends Controller
         $bestSellingProducts = Sale::groupBy('product_id')
             ->selectRaw('product_id, SUM(quantity) as total_quantity')
             ->orderByDesc('total_quantity')
-            ->limit(5) // You can adjust the limit according to your needs
+            ->limit(5) 
             ->get();
 
         // Return response

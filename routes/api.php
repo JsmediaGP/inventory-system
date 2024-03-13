@@ -29,59 +29,36 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+Route::group(['middleware' => 'auth:api'], function () {
+    // Employee
+    Route::get('/employees', [EmployeeController::class, 'index']);
+    Route::get('/employees/{id}', [EmployeeController::class, 'show']);
+    Route::put('/employees/{id}', [EmployeeController::class, 'update']);
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+
+    // Categories
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+
+    // Products
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+    Route::put('/products/{id}', [ProductController::class, 'update']);
+    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+    // Sales
+    Route::get('/sales', [SalesController::class, 'index']);
+    Route::get('/sales/best-selling', [SalesController::class, 'bestSelling']);
+    Route::post('/sales/sell', [SalesController::class, 'sell']);
+
+    // Stock Management
+    Route::get('/stock', [StockController::class, 'index']);
 
 
-// Employee
-Route::middleware('auth:api')->get('/employees', 'EmployeeController@index');
-Route::middleware('auth:api')->get('/employees/{id}', 'EmployeeController@show');
-Route::middleware('auth:api')->put('/employees/{id}', 'EmployeeController@update');
-Route::middleware('auth:api')->delete('/employees/{id}', 'EmployeeController@destroy');
-
-
-//categories
-Route::middleware('auth:api')->get('/categories', 'CategoryController@index');
-Route::middleware('auth:api')->post('/categories', 'CategoryController@store');
-Route::middleware('auth:api')->get('/categories/{id}', 'CategoryController@show');
-Route::middleware('auth:api')->put('/categories/{id}', 'CategoryController@update');
-Route::middleware('auth:api')->delete('/categories/{id}', 'CategoryController@destroy');
-
-
-//products
-Route::middleware('auth:api')->get('/products', 'ProductController@index');
-Route::middleware('auth:api')->post('/products', 'ProductController@store');
-Route::middleware('auth:api')->get('/products/{id}', 'ProductController@show');
-Route::middleware('auth:api')->put('/products/{id}', 'ProductController@update');
-Route::middleware('auth:api')->delete('/products/{id}', 'ProductController@destroy');
-
-//Sales
-Route::middleware('auth:api')->get('/sales', 'SalesController@index');
-Route::middleware('auth:api')->get('/sales/best-selling', 'SaleController@bestSelling');
-Route::middleware('auth:api')->post('/sales/sell', 'SaleController@sell');
-
-
-
-//Stock Management
-Route::middleware('auth:api')->get('/stock', 'StockController@index');
-
-
-//POS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
