@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
         // Get all products
-        $products = Product::all();
+        $products = Product::with('category')->get();
 
         // Return response
         return response()->json(['products' => $products], 200);
@@ -21,12 +21,18 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Validate incoming request
         $request->validate([
             'name' => 'required|string|unique:products',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
+            'image'=>'required|string',
         ]);
 
         // Create new product
@@ -35,6 +41,7 @@ class ProductController extends Controller
             'category_id' => $request->category_id,
             'price' => $request->price,
             'quantity' => $request->quantity,
+            'image' => $request->image,
         ]);
 
         // Return response
@@ -46,7 +53,7 @@ class ProductController extends Controller
     public function show($id)
     {
         // Find the product by ID
-        $product = Product::findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
 
         // Return response
         return response()->json(['product' => $product], 200);
@@ -56,6 +63,10 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the product by ID
         $product = Product::findOrFail($id);
 
@@ -76,6 +87,11 @@ class ProductController extends Controller
 
         public function destroy($id)
     {
+
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the product by ID
         $product = Product::findOrFail($id);
 

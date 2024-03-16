@@ -34,34 +34,34 @@ Route::group(['middleware' => 'auth:api'], function () {
     // Employee routes with 'employee' prefix
     Route::prefix('employee')->group(function () {
         Route::get('/', [EmployeeController::class, 'index']);
-        Route::get('/{id}', [EmployeeController::class, 'show']);
-        Route::put('/{id}', [EmployeeController::class, 'update']);
-        Route::delete('/{id}', [EmployeeController::class, 'destroy']);
+        Route::get('/employee/{id}', [EmployeeController::class, 'show']);
+        Route::put('/update-employee/{id}', [EmployeeController::class, 'update']);
+        Route::delete('/delete-employee/{id}', [EmployeeController::class, 'destroy']);
     });
 
     // Categories routes with 'categories' prefix
     Route::prefix('categories')->group(function () {
         Route::get('/', [CategoryController::class, 'index']);
-        Route::post('/', [CategoryController::class, 'store']);
-        Route::get('/{id}', [CategoryController::class, 'show']);
-        Route::put('/{id}', [CategoryController::class, 'update']);
-        Route::delete('/{id}', [CategoryController::class, 'destroy']);
+        Route::post('/new-category', [CategoryController::class, 'store']);
+        Route::get('/category/{id}', [CategoryController::class, 'show']);
+        Route::put('/update-category/{id}', [CategoryController::class, 'update']);
+        Route::delete('/delete-category{id}', [CategoryController::class, 'destroy']);
     });
 
     // Products routes with 'products' prefix
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
-        Route::post('/', [ProductController::class, 'store']);
-        Route::get('/{id}', [ProductController::class, 'show']);
-        Route::put('/{id}', [ProductController::class, 'update']);
-        Route::delete('/{id}', [ProductController::class, 'destroy']);
+        Route::post('/new-product', [ProductController::class, 'store']);
+        Route::get('/product/{id}', [ProductController::class, 'show']);
+        Route::put('/update-product/{id}', [ProductController::class, 'update']);
+        Route::delete('/delete-product/{id}', [ProductController::class, 'destroy']);
     });
 
     // Sales routes with 'sales' prefix
     Route::prefix('sales')->group(function () {
         Route::get('/', [SalesController::class, 'index']);
         Route::get('/best-selling', [SalesController::class, 'bestSelling']);
-        Route::post('/sell', [SalesController::class, 'sell']);
+        Route::post('/POS', [SalesController::class, 'sell']);
     });
 
     // Stock Management routes with 'stock' prefix

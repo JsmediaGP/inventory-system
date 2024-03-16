@@ -21,6 +21,10 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Validate incoming request
         $request->validate([
             'name' => 'required|string|unique:categories',
@@ -50,6 +54,10 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the product category by ID
         $category = Category::findOrFail($id);
 
@@ -69,6 +77,10 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the product category by ID
         $category = Category::findOrFail($id);
 

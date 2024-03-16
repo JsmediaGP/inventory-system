@@ -11,6 +11,8 @@ class SalesController extends Controller
 {
     public function index()
     {
+        
+       
         // Get all sales
         $sales = Sale::all();
 
@@ -21,6 +23,10 @@ class SalesController extends Controller
 
     public function bestSelling()
     {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Group sales by product ID and calculate total quantity sold
         $bestSellingProducts = Sale::groupBy('product_id')
             ->selectRaw('product_id, SUM(quantity) as total_quantity')

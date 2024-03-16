@@ -90,6 +90,7 @@ class AuthController extends Controller
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string',
         'role' => 'required|string|in:employee,manager',
+        'image'=> 'required|string',
     ];
 
     // Validate the request data

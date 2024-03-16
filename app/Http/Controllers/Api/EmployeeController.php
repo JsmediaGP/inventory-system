@@ -10,6 +10,11 @@ class EmployeeController extends Controller
 {
     public function index()
     {
+
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
+       
         // Get all employees
         $employees = User::where('role', 'employee')->get();
 
@@ -20,6 +25,10 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
+
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the employee by ID
         $employee = User::findOrFail($id);
 
@@ -36,6 +45,9 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id)
     {
+        if($request->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the employee by ID
         $employee = User::findOrFail($id);
 
@@ -53,7 +65,9 @@ class EmployeeController extends Controller
 
         // Update employee details
         $employee->update($request->only(['name', 'email', 'password']));
-
+        if($request->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Return response
         return response()->json(['message' => 'Employee details updated successfully'], 200);
     }
@@ -62,6 +76,9 @@ class EmployeeController extends Controller
 
     public function destroy($id)
     {
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
         // Find the employee by ID
         $employee = User::findOrFail($id);
 
