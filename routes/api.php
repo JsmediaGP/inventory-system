@@ -55,6 +55,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/product/{id}', [ProductController::class, 'show']);
         Route::put('/update-product/{id}', [ProductController::class, 'update']);
         Route::delete('/delete-product/{id}', [ProductController::class, 'destroy']);
+        Route::post('/order', [ProductController::class, 'order']);
     });
 
     // Sales routes with 'sales' prefix

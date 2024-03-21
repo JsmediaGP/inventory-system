@@ -1,0 +1,26 @@
+DB Details
+
+Database name: productmanagement
+
+Username:root
+Password:Rootpms@1
+
+
+
+Name: id21988639_productmanagement
+USer: id21988639_root
+
+
+
+
+WEbsite password: Adedayojos@1
+
+
+
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=id21988639_productmanagement
+DB_USERNAME=id21988639_root
+DB_PASSWORD=Rootpms@1

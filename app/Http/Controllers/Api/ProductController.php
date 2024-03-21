@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -100,6 +101,49 @@ class ProductController extends Controller
 
         // Return response
         return response()->json(['message' => 'Product deleted successfully'], 200);
+    }
+
+    public function order(Request $request)
+    {
+        
+        if(\request()->user()->role!== 'manager') {
+            return response()->json(['message' => 'You are not authorized to access this resource'], 401);
+        }
+
+        $request->validate([
+            'product_id'=>'required|exists:products,id',
+            'quantity'=> 'required|integer|min:1'
+        ]);
+        $productID= $request->input('product_id');
+        $quantity = $request->input('quantity');
+
+        //check if the product already exists
+        $product = Product::find($productID);
+        if($product){
+            $product ->quantity+=$quantity;
+            $product->save();
+
+            $order = Order::Create([
+                'product_id'=> $productID,
+                'quantity'=>$quantity,
+            ]);
+
+            return response()->json(
+                [
+                    'message'=> 'Product Order Successfully'
+                ],200
+            );
+        }else{
+
+            return response()->json(
+                [
+                    'message'=> 'Product Does not exist Create new product'
+                ],200
+            );
+
+        }
+        
+       
     }
 
     
